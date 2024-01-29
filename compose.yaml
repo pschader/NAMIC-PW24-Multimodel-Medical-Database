@@ -9,7 +9,7 @@ services:
     secrets:
       - orthanc.json
     environment:
-      - ORTHANC_NAME=HelloWorld
+      - ORTHANC_NAME=NAMIC
   hapi-fhir-jpaserver-start:
     build: hapi-fhir/.
     restart: on-failure
