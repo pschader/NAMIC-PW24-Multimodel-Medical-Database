@@ -1,3 +1,11 @@
 [submodule "hapi-fhir"]
 	path = hapi-fhir
 	url = https://github.com/hapifhir/hapi-fhir-jpaserver-starter.git
+[submodule "racoon"]
+	url = git@github.com:Chinlinlee/raccoon-dicom.git
+[submodule "raccoon-dicom"]
+	path = raccoon-dicom
+	url = git@github.com:Chinlinlee/raccoon-dicom.git
+[submodule "orthanc-mongodb"]
+	path = orthanc-mongodb
+	url = git@github.com:Doc-Cirrus/orthanc-mongodb.git
