@@ -11,7 +11,8 @@ services:
     environment:
       - ORTHANC_NAME=NAMIC
     volumes:
-      - orthanc:/var/lib/orthanc/db
+      - orthanc_db:/var/lib/orthaxnc/db
+
   hapi-fhir-jpaserver-start:
     build: hapi-fhir/.
     restart: on-failure
@@ -28,7 +29,7 @@ services:
       - hapi-fhir-postgres:/var/lib/postgresql/data
 volumes:
   hapi-fhir-postgres:
-  orthanc:
+  orthanc_db:
 secrets:
   orthanc.json:
     file: orthanc.json
