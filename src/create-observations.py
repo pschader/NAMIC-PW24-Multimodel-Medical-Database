@@ -61,7 +61,7 @@ def create_observations(data):
            #}]
         })
 
-xml_results = glob.glob('data/**/*radiomics.xml', recursive=True)
+xml_results = glob.glob('radiomics/data/**/*radiomics.xml', recursive=True)
 
 
 data = []

@@ -1,1 +1,4 @@
 fhir.resources
+requests
+pydicom
+dicomweb_client
