@@ -91,7 +91,7 @@ if __name__=='__main__':
 
 
     # Define the path to the DICOM file
-    dicom_dir = '/Users/mmonzon/Downloads/TCIA/manifest-1603198545583/NSCLC-Radiomics/LUNG1-006/'
+    dicom_dir = './data/TCIA/manifest-1603198545583/NSCLC-Radiomics/LUNG1-006/'
 
     # Create the FHIR ImagingStudy object
     imaging_study = dicom_to_fhir(dicom_dir)
