@@ -6,9 +6,11 @@ from pathlib import Path
 from pynetdicom import AE, StoragePresentationContexts
 from requests.auth import HTTPBasicAuth
 
-from src.orthanc_metadata import session
+from src.metadata import session
 from src.utils import get_environment_variable
 
+# I
+session = requests.Session()
 
 def send_dicom_to_pacs(series_path, pacs_host, pacs_port):
     # Initialize the Application Entity
