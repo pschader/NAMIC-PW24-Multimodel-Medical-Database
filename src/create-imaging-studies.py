@@ -29,7 +29,6 @@ print("Fetch segmentation instances metadata")
 seg_instances = []
 for seg_instance_metadata in tqdm(seg_instances_metadata):
   seg_instances.extend(request(f'/studies/{seg_instance_metadata.StudyInstanceUID}/series/{seg_instance_metadata.SeriesInstanceUID}/instances/{seg_instance_metadata.SOPInstanceUID}/metadata'))
-  # break
 
 print(f"Found {len(seg_instances)} segmentation instances")
 
@@ -69,3 +68,10 @@ imaging_selections = list(create_imaging_selections(seg_instances))
 
 print(f"Created {len(imaging_selections)}") 
 print(imaging_selections[0].json())
+
+print("Post Imaging Selection Object to FHIR Server")
+fhir_session = requests.Session()
+for imaging_selection in imaging_selections:
+  r = fhir_session.post("http://localhost:8080/fhir/ImagingSelection", json=imaging_selection.dict())
+  r.raise_for_status()
+  break #TODO remove
