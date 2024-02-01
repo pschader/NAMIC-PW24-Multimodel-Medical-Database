@@ -1,17 +1,65 @@
 import requests
+
 from pydicom.dataset import Dataset
 from requests.auth import HTTPBasicAuth
+from tqdm import tqdm
+from fhir.resources.imagingselection import ImagingSelection
 
-headers = {
+session = requests.Session()
+session.auth = HTTPBasicAuth('admin', 'admin')
+session.headers = {
   'Accept': 'application/dicom+json'
 }
 
-auth = HTTPBasicAuth('admin', 'admin')
-response = requests.get('http://localhost:8042/dicom-web/studies', auth=auth, headers=headers)
-response.raise_for_status()
+BASE_URL = 'http://localhost:8042/dicom-web'
 
-objs = []
-for x in response.json():
-  objs.append(Dataset.from_json(x))
+def request(endpoint: str):
+  response = session.get(BASE_URL+endpoint)
+  response.raise_for_status()
 
-print(len(objs))
+  objects = []
+  for x in response.json():
+    objects.append(Dataset.from_json(x))
+  return objects
+
+print("Find segmentation instances...")
+seg_instances_metadata = request('/instances?00080060=SEG')
+
+print("Fetch segmentation instances metadata")
+seg_instances = []
+for seg_instance_metadata in tqdm(seg_instances_metadata):
+  seg_instances.extend(request(f'/studies/{seg_instance_metadata.StudyInstanceUID}/series/{seg_instance_metadata.SeriesInstanceUID}/instances/{seg_instance_metadata.SOPInstanceUID}/metadata'))
+  # break
+
+print(f"Found {len(seg_instances)} segmentation instances")
+
+def create_imaging_selections(seg_instances):
+  for seg_instance in seg_instances:
+    for segment in seg_instance.SegmentSequence:
+      # TODO
+      # - Subject
+      # - Derived From
+      imaging_selection = ImagingSelection(**{
+        "status": "available",
+        "studyUid": seg_instance.StudyInstanceUID,
+        "seriesUid": seg_instance.SeriesInstanceUID,
+        "code": {
+              "coding": [ {
+              "system": "https://www.cancerimagingarchive.net/collection/nsclc-radiomics/",
+              "code": segment.SegmentLabel,
+              "display": segment.SegmentLabel,
+          }]
+        },
+        "instance": [{
+          "uid": seg_instance.SOPInstanceUID,
+          "subset": [
+            segment.SegmentNumber
+          ]
+        }]
+      })
+      yield imaging_selection
+
+imaging_selections = list(create_imaging_selections(seg_instances))
+
+print(f"Created {len(imaging_selections)}") 
+print(imaging_selections[0].json())
