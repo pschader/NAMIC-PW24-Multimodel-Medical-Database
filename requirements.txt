@@ -3,3 +3,4 @@ requests
 pydicom
 dicomweb_client
 tqdm
+pynetdicom
