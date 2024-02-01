@@ -95,3 +95,11 @@ if __name__=='__main__':
 
     # Create the FHIR ImagingStudy object
     imaging_study = dicom_to_fhir(dicom_dir)
+    fhir_json = json.dumps(imaging_study.as_json(), cls=FHIREncoder, indent=4)
+
+    # Save the FHIR JSON to a file
+    with open("imaging_study.json", "w") as f:
+        f.write(fhir_json)
+
+    # Send the FHIR JSON to the FHIR server
+    #response = requests.post("http://localhost:8080/fhir/ImagingStudy", json=fhir_json)
