@@ -1,4 +1,4 @@
-version: '3.1'
+version: '3.7'
 services:
   orthanc:
     image: jodogne/orthanc-plugins:1.12.2
@@ -11,7 +11,7 @@ services:
     environment:
       - ORTHANC_NAME=NAMIC
     volumes:
-      - orthanc_db:/var/lib/orthaxnc/db
+      - orthanc_db:/var/lib/orthanc/db
 
   hapi-fhir-jpaserver-start:
     build: hapi-fhir/.
