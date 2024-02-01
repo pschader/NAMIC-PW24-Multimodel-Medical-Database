@@ -38,11 +38,17 @@ def create_imaging_selections(seg_instances):
     for segment in seg_instance.SegmentSequence:
       # TODO
       # - Subject
-      # - Derived From
       imaging_selection = ImagingSelection(**{
         "status": "available",
         "studyUid": seg_instance.StudyInstanceUID,
         "seriesUid": seg_instance.SeriesInstanceUID,
+        "derivedFrom": [{
+          "type": "ImagingStudy",
+          "identifier": {
+            "system": "urn:dicom:uid",
+            "value": f"urn:oid:{seg_instance.StudyInstanceUID}",
+          },
+        }],
         "code": {
               "coding": [ {
               "system": "https://www.cancerimagingarchive.net/collection/nsclc-radiomics/",
