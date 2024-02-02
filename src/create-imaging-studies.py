@@ -35,12 +35,17 @@ print(f"Found {len(seg_instances)} segmentation instances")
 def create_imaging_selections(seg_instances):
   for seg_instance in seg_instances:
     for segment in seg_instance.SegmentSequence:
-      # TODO
-      # - Subject
       imaging_selection = ImagingSelection(**{
         "status": "available",
         "studyUid": seg_instance.StudyInstanceUID,
         "seriesUid": seg_instance.SeriesInstanceUID,
+        "subject": {
+          "type": "Patient",
+          "identifier": {
+            "system": "https://www.cancerimagingarchive.net/collection/nsclc-radiomics/",
+            "value": f"{seg_instance.PatientID}",
+          },
+        },
         "derivedFrom": [{
           "type": "ImagingStudy",
           "identifier": {
