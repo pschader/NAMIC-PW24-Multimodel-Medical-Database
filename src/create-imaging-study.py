@@ -23,9 +23,10 @@ def request(endpoint: str):
   return objects
 
 
-print("Find segmentation studies...")
+print("Find studies...")
 studies_metadata = request('/studies')
 
+print("Create FHIR Imaging Resources...")
 imaging_studies = []
 for study in tqdm(studies_metadata):
   series_metadata = request(f'/studies/{study.StudyInstanceUID}/series')
@@ -59,6 +60,10 @@ for study in tqdm(studies_metadata):
     started=study.StudyDate,
     series=imaging_study_series,
   ))
-  #break
+  #break #TODO only for debugging
 
-print(imaging_studies[0].json())
+filepath='data/fhir-resources/imaging-studies.json'
+print(f"Write {filepath}")
+with open(filepath, 'w') as fp:
+    for imaging_study in imaging_studies:
+        fp.write(imaging_study.json())

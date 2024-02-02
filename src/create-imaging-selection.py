@@ -74,9 +74,16 @@ imaging_selections = list(create_imaging_selections(seg_instances))
 print(f"Created {len(imaging_selections)}") 
 print(imaging_selections[0].json())
 
-print("Post Imaging Selection Object to FHIR Server")
-fhir_session = requests.Session()
-for imaging_selection in imaging_selections:
-  r = fhir_session.post("http://localhost:8080/fhir/ImagingSelection", json=imaging_selection.dict())
-  r.raise_for_status()
-  break #TODO remove
+# print("Post Imaging Selection Object to FHIR Server")
+# fhir_session = requests.Session()
+# for imaging_selection in imaging_selections:
+#   r = fhir_session.post("http://localhost:8080/fhir/ImagingSelection", json=imaging_selection.dict())
+#   r.raise_for_status()
+#   break #TODO remove
+
+filepath='data/fhir-resources/imaging-selections.json'
+print(f"Writing {filepath}")
+with open(filepath, 'w') as fp:
+    for imaging_selection in imaging_selections:
+        fp.write(imaging_selection.json())
+

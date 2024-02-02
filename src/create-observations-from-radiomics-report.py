@@ -72,12 +72,17 @@ observations = []
 for d in data:
     observations.extend(create_observations(d))
 
-print(f"Created {len(observations)} observations")
-print(observations[0].json())
+# print(f"Created {len(observations)} observations")
+# print(observations[0].json())
 
-print("Post Observations to FHIR Server")
-fhir_session = requests.Session()
-for observation in observations:
-  r = fhir_session.post("http://localhost:8080/fhir/Observation", json=observation.json())
-  r.raise_for_status()
+# print("Post Observations to FHIR Server")
+# fhir_session = requests.Session()
+# for observation in observations:
+#   r = fhir_session.post("http://localhost:8080/fhir/Observation", json=observation.json())
+#   r.raise_for_status()
 
+filepath='data/fhir-resources/radiomics-observations.json'
+print(f"Writing {filepath}")
+with open(filepath, 'w') as fp:
+    for observation in observations:
+        fp.write(observation.json())
