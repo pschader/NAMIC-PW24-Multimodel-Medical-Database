@@ -30,7 +30,7 @@ dotenv.load_dotenv()
 def dicom_to_fhir(dicom_dir):
 
     dicom_series = get_dicom_paths(dicom_dir)
-
+    imaging_study = None
     for suid, fpaths in dicom_series.items():
         # Read the DICOM file
         series = [dcmread(str(f)) for f in fpaths]
@@ -39,8 +39,14 @@ def dicom_to_fhir(dicom_dir):
         imaging_study = ImagingStudy(
             id=ds.StudyInstanceUID,
             status="available",
-            subject={"reference": f"Patient/{ds.PatientID}"},
             started=ds.StudyDate,
+            subject= {
+                "type": "Patient",
+                "identifier": {
+                    "system": "https://www.cancerimagingarchive.net/collection/nsclc-radiomics/",
+                    "value": f"{ds.PatientID}"
+                    },
+            },
             series=[
                 ImagingStudySeries(
                     uid=s.SeriesInstanceUID,
@@ -89,13 +95,12 @@ if __name__=='__main__':
     session = requests.Session()
     # test_orthanc()
 
-
     # Define the path to the DICOM file
-    dicom_dir = './data/TCIA/manifest-1603198545583/NSCLC-Radiomics/LUNG1-006/'
+    dicom_dir = 'TCIA/manifest-1603198545583/NSCLC-Radiomics/LUNG1-006/'
 
     # Create the FHIR ImagingStudy object
     imaging_study = dicom_to_fhir(dicom_dir)
-    fhir_json = json.dumps(imaging_study.as_json(), cls=FHIREncoder, indent=4)
+    fhir_json = json.dumps(imaging_study.dict(), cls=FHIREncoder, indent=4)
 
     # Save the FHIR JSON to a file
     with open("imaging_study.json", "w") as f:
