@@ -1765,7 +1765,7 @@
                                     // and "proto" correctly in the "Forwarded" HTTP headers.
                                     // (since release 1.8)
     //"StudiesMetadata" : "Full",     // How series-level metadata is retrieved (since release 1.1, cf. section below)
-    "StudiesMetadata" : "Extrapolate",     // "StudiesMetadata" : "Full" // How study-level metadata is retrieved (since release 1.1, cf. section below)
+    "StudiesMetadata" : "Full",     // "StudiesMetadata" : "Full" // How study-level metadata is retrieved (since release 1.1, cf. section below)
     "StudiesMetadataExtrapolatedTags" : [
       "AcquisitionDate",
       "AcquisitionTime",
@@ -1773,7 +1773,7 @@
       "BodyPartExamined"
 
     ],
-    "SeriesMetadata" : "Extrapolate",    // How study-level metadata is retrieved (since release 1.1, cf. section below
+    "SeriesMetadata" : "Full",    // How study-level metadata is retrieved (since release 1.1, cf. section below
     "SeriesMetadataExtrapolatedTags" : [
       "BitsAllocated",
       "BitsStored",
