@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import xml.etree.ElementTree as ET
-import re
 import glob
+import requests
 from fhir.resources.observation import Observation
 
 
@@ -68,9 +68,16 @@ data = []
 for result in xml_results:
     data.append(parse_radiomics_results(result))
 
-objects = []
+observations = []
 for d in data:
-    objects.extend(create_observations(d))
+    observations.extend(create_observations(d))
 
-print(len(objects))
-print(objects[0].json())
+print(f"Created {len(observations)} observations")
+print(observations[0].json())
+
+print("Post Observations to FHIR Server")
+fhir_session = requests.Session()
+for observation in observations:
+  r = fhir_session.post("http://localhost:8080/fhir/Observation", json=observation.json())
+  r.raise_for_status()
+
