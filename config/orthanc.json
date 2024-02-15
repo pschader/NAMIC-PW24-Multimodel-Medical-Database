@@ -1,17 +1,17 @@
-{
+ {
   /**
    * General configuration of Orthanc
    *
-   * As a general recommendation, you should always favour absolute 
-   * paths when you need to provide a path to a file or a directory.  
-   * This is not done in this configuration file since we don't know 
+   * As a general recommendation, you should always favour absolute
+   * paths when you need to provide a path to a file or a directory.
+   * This is not done in this configuration file since we don't know
    * where Orthanc is going to be installed.
    **/
 
   // The logical name of this instance of Orthanc. This one is
   // displayed in Orthanc Explorer and at the URI "/system".
 
-  "Name" : "${ORTHANC_NAME:-NAMIC}",
+  "Name" : "${ORTHANC_NAME:-DEBUG}",
 
 
   // Path to the directory that holds the heavyweight files (i.e. the
@@ -85,7 +85,7 @@
   // folders, in which case they will be scanned non-recursively to
   // find shared libraries. Backslashes must be either escaped by
   // doubling them, or replaced by forward slashes "/".
-  "Plugins" : [ 
+  "Plugins" : [
     "/usr/share/orthanc/plugins", "/usr/local/share/orthanc/plugins"
   ],
 
@@ -254,9 +254,9 @@
 
   // Path to a file containing the concatenation of the client SSL
   // certificate(s) that are trusted to verify the identity of remote
-  // HTTP clients. The individual certificate(s) or root CAs must be 
-  // stored in the PEM format. This option is only meaningful 
-  // if "SslVerifyPeers" is true.  
+  // HTTP clients. The individual certificate(s) or root CAs must be
+  // stored in the PEM format. This option is only meaningful
+  // if "SslVerifyPeers" is true.
   "SslTrustedClientCertificates" : "trustedClientCertificates.pem",
 
   // Whether or not the password protection is enabled (using HTTP
@@ -1583,9 +1583,9 @@
             "ShareDurations": [0, 7, 15, 30, 90, 365],  // The share durations proposed in the UI
 
             // If both OHIF viewer configurations are enabled, only the v3 is taken into account
-            "EnableOpenInOhifViewer": false,            // Enables a "open in OHIF viewer" button.  Note: OHIF can not be used together with KeyCloak (https://community.ohif.org/t/ohif-orthanc-token-to-access-a-single-study/727)
+            "EnableOpenInOhifViewer": true,            // Enables a "open in OHIF viewer" button.  Note: OHIF can not be used together with KeyCloak (https://community.ohif.org/t/ohif-orthanc-token-to-access-a-single-study/727)
             "OhifViewerPublicRoot" : "http://to-be-defined/",  // must end with a '/'.  e.g: "http://ohif.my.site/" means that link to OHIF will look like http://ohif.my.site/Viewer/1.2.3.444.5555....
-            "EnableOpenInOhifViewer3": false,           // Enables a "open in OHIF viewer" button.  If the OHIF plugin is loaded, the default value is 'true'
+            "EnableOpenInOhifViewer3": true,           // Enables a "open in OHIF viewer" button.  If the OHIF plugin is loaded, the default value is 'true'
             "OhifViewer3PublicRoot" : "/ohif/",         // must end with a '/'.  e.g: "http://ohif.my.site/" means that link to OHIF will look like http://ohif.my.site/viewer?StudyInstanceUIDs=1.2.3.444.5555....
 
             "EnableOpenInMedDreamViewer": false,        // Enables a "open in MedDream viewer" button
@@ -1733,6 +1733,18 @@
         }
     },
   "DicomWeb" : {
+
+    "Servers" : {
+      "namic" : {
+        "Url" : "localhost:8042/dicom-web/",
+        "Username" : "admin",
+        "Password" : "admin",
+        "HasDelete" : true,
+        "ChunkedTransfers" : true,                 // Set to "false" if "sample" is Orthanc <= 1.5.6
+        "HasWadoRsUniversalTransferSyntax" : true  // Set to "false" if "sample" is Orthanc DICOMweb plugin <= 1.0
+        }
+    },
+
     "Enable" : true,                // Whether DICOMweb support is enabled
     "Root" : "/dicom-web/",         // Root URI of the DICOMweb API (for QIDO-RS, STOW-RS and WADO-RS)
     "EnableWado" : true,            // Whether WADO-URI (previously known as WADO) support is enabled
@@ -1752,15 +1764,31 @@
                                     // base endpoint than the "Root" one.  Note that, if using a reverse-proxy, make sure to set the "host"
                                     // and "proto" correctly in the "Forwarded" HTTP headers.
                                     // (since release 1.8)
-    "Servers" : {
-      "namic" : {
-        "Url" : "localhost:8042/dicom-web/",
-        "Username" : "admin",
-        "Password" : "admin",
-        "HasDelete" : true,
-        "ChunkedTransfers" : true,                 // Set to "false" if "sample" is Orthanc <= 1.5.6
-        "HasWadoRsUniversalTransferSyntax" : true  // Set to "false" if "sample" is Orthanc DICOMweb plugin <= 1.0
-        }
-    }
+    //"StudiesMetadata" : "Full",     // How series-level metadata is retrieved (since release 1.1, cf. section below)
+    "StudiesMetadata" : "Full",     // "StudiesMetadata" : "Full" // How study-level metadata is retrieved (since release 1.1, cf. section below)
+    "StudiesMetadataExtrapolatedTags" : [
+      "AcquisitionDate",
+      "AcquisitionTime",
+      "AccessionNumber",
+      "BodyPartExamined"
+
+    ],
+    "SeriesMetadata" : "Full",    // How study-level metadata is retrieved (since release 1.1, cf. section below
+    "SeriesMetadataExtrapolatedTags" : [
+      "BitsAllocated",
+      "BitsStored",
+      "Columns",
+      "HighBit",
+      "PhotometricInterpretation",
+      "PixelSpacing",
+      "PlanarConfiguration",
+      "RescaleIntercept",
+      "RescaleSlope",
+      "Rows",
+      "SOPClassUID",
+      "SamplesPerPixel",
+      "SliceThickness"
+    ]
+  }
   }
 }

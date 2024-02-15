@@ -1,22 +1,32 @@
-version: '3.1'
 services:
   orthanc:
     image: jodogne/orthanc-plugins:1.12.2
     command: /run/secrets/
+
+    volumes:
+        - orthanc_db:/var/lib/orthanc/db
     ports:
-      - 4242:4242
       - 8042:8042
+      - 4242:4242
+    environment:
+      - TRACE_ENABLED=true
+      - ORTHANC_NAME=NAMIC
     secrets:
       - orthanc.json
-    environment:
-      - ORTHANC_NAME=NAMIC
+
+  blaze-fhir:
+    image: samply/blaze:0.23
+    ports:
+      - 8081:8080
     volumes:
-      - orthanc:/var/lib/orthanc/db
+      - blaze-fhir:/app/data
+
   hapi-fhir-jpaserver-start:
     build: hapi-fhir/.
     restart: on-failure
     ports:
       - "8080:8080"
+
   hapi-fhir-postgres:
     image: postgres:13-alpine
     restart: always
@@ -26,9 +36,12 @@ services:
       POSTGRES_PASSWORD: "admin"
     volumes:
       - hapi-fhir-postgres:/var/lib/postgresql/data
+
 volumes:
+  orthanc_db:
   hapi-fhir-postgres:
-  orthanc:
+  blaze-fhir:
 secrets:
   orthanc.json:
-    file: orthanc.json
+    file: ./config/orthanc.json
+
